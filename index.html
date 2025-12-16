@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLAME Protocol | Client Submission Analysis System</title>
+    <title>FLAME Protocol | Forensic Document Analysis System</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
@@ -27,298 +27,274 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
+            font-size: 13px;
         }
         
-        /* Header */
         .header {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            padding: 12px 24px;
+            background: linear-gradient(180deg, #1a0a0a 0%, #0d1117 100%);
+            border-bottom: 2px solid var(--accent-red);
+            padding: 15px 24px;
         }
         .header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1600px;
+            max-width: 1800px;
             margin: 0 auto;
         }
-        .brand { font-size: 16px; font-weight: 700; color: var(--accent-blue); letter-spacing: 2px; }
-        .brand-sub { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
-        .header-meta {
-            display: flex;
-            gap: 20px;
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-        .header-meta span { color: var(--accent-green); }
-        .status-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: var(--accent-green);
-            border-radius: 50%;
-            margin-right: 4px;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        .nav-row {
-            display: flex;
-            gap: 5px;
-            margin-top: 12px;
-            max-width: 1600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .nav-item {
-            padding: 8px 16px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .nav-item:hover, .nav-item.active {
+        .brand { font-size: 18px; font-weight: 700; color: var(--accent-red); letter-spacing: 3px; }
+        .brand-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+        .header-badges { display: flex; gap: 10px; }
+        .badge {
+            padding: 4px 10px;
             background: var(--bg-tertiary);
-            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        .badge.active { border-color: var(--accent-green); color: var(--accent-green); }
+        .badge.warn { border-color: var(--accent-red); color: var(--accent-red); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+        
+        .app-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
         }
         
-        /* Main Grid */
-        .app-grid {
+        .grid-3 {
             display: grid;
-            grid-template-columns: 320px 1fr 350px;
+            grid-template-columns: 350px 1fr 400px;
             gap: 20px;
-            max-width: 1600px;
-            margin: 20px auto;
-            padding: 0 20px;
-            min-height: calc(100vh - 120px);
         }
         
-        /* Panels */
         .panel {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: 8px;
-            overflow: hidden;
         }
-        .section {
-            padding: 16px;
-            border-bottom: 1px solid var(--border);
-        }
-        .section:last-child { border-bottom: none; }
-        .section-title {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-        }
-        
-        /* Upload Zone */
-        .upload-zone {
-            border: 2px dashed var(--border);
-            border-radius: 8px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .upload-zone:hover, .upload-zone.dragover {
-            border-color: var(--accent-blue);
-            background: rgba(88, 166, 255, 0.05);
-        }
-        .upload-icon { font-size: 36px; margin-bottom: 10px; }
-        .upload-text { font-size: 13px; color: var(--text-primary); margin-bottom: 5px; }
-        .upload-hint { font-size: 11px; color: var(--text-secondary); }
-        .file-input { display: none; }
-        
-        /* Progress Bar */
-        .progress-bar {
-            height: 4px;
-            background: var(--bg-tertiary);
-            border-radius: 2px;
-            margin-top: 12px;
-            overflow: hidden;
-            display: none;
-        }
-        .progress-bar.active { display: block; }
-        .progress-fill {
-            height: 100%;
-            background: var(--accent-blue);
-            width: 0%;
-            transition: width 0.3s;
-        }
-        
-        /* File List */
-        .file-list { margin-top: 12px; }
-        .file-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 12px;
-            background: var(--bg-tertiary);
-            border-radius: 6px;
-            margin-bottom: 6px;
-            font-size: 12px;
-        }
-        .file-name { color: var(--text-primary); }
-        .file-status { color: var(--accent-green); font-size: 10px; }
-        .file-status.error { color: var(--accent-red); }
-        .file-status.processing { color: var(--accent-orange); }
-        
-        /* Document Types */
-        .doc-types {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        .doc-type {
-            padding: 10px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 11px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .doc-type:hover { border-color: var(--accent-blue); }
-        .doc-type.selected { border-color: var(--accent-green); background: rgba(63, 185, 80, 0.1); }
-        .doc-type-icon { font-size: 20px; margin-bottom: 4px; }
-        
-        /* Text Area */
-        .input-box {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-        .input-header {
-            display: flex;
-            justify-content: space-between;
+        .panel-header {
             padding: 12px 16px;
             background: var(--bg-tertiary);
             border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
         }
-        .input-label { font-size: 12px; font-weight: 600; }
-        .input-meta { font-size: 11px; color: var(--text-secondary); }
-        .input-area {
-            flex: 1;
-            background: var(--bg-secondary);
-            border: none;
+        .panel-body { padding: 16px; }
+        
+        /* Upload */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+        .upload-zone:hover { border-color: var(--accent-blue); background: rgba(88,166,255,0.05); }
+        .upload-zone.dragover { border-color: var(--accent-green); background: rgba(63,185,80,0.1); }
+        .upload-icon { font-size: 48px; margin-bottom: 10px; }
+        .upload-text { font-size: 14px; margin-bottom: 5px; }
+        .upload-hint { font-size: 11px; color: var(--text-secondary); }
+        input[type="file"] { display: none; }
+        
+        .progress-bar {
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 12px 0;
+            display: none;
+        }
+        .progress-bar.active { display: block; }
+        .progress-fill { height: 100%; background: var(--accent-blue); width: 0%; transition: width 0.3s; }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+        .file-status { font-size: 10px; padding: 2px 8px; border-radius: 3px; }
+        .file-status.success { background: var(--accent-green); color: #000; }
+        .file-status.error { background: var(--accent-red); color: #fff; }
+        .file-status.processing { background: var(--accent-orange); color: #000; }
+        
+        /* Doc Type Selector */
+        .doc-type-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .doc-type-btn {
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .doc-type-btn:hover { border-color: var(--accent-blue); }
+        .doc-type-btn.selected { border-color: var(--accent-green); background: rgba(63,185,80,0.1); }
+        .doc-type-icon { font-size: 24px; margin-bottom: 4px; }
+        .doc-type-label { font-size: 11px; }
+        
+        /* Text Area */
+        .content-area {
+            width: 100%;
+            min-height: 400px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
             color: var(--text-primary);
             padding: 16px;
             font-family: 'Consolas', monospace;
             font-size: 12px;
             line-height: 1.6;
-            resize: none;
-            min-height: 300px;
+            resize: vertical;
         }
-        .input-area:focus { outline: none; }
-        .input-area::placeholder { color: var(--text-secondary); }
+        .content-area:focus { outline: none; border-color: var(--accent-blue); }
+        
+        .char-count {
+            text-align: right;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
         
         /* Buttons */
-        .btn-row {
-            display: flex;
-            gap: 10px;
-            padding: 12px 16px;
-            background: var(--bg-tertiary);
-            border-top: 1px solid var(--border);
-        }
+        .btn-row { display: flex; gap: 10px; margin-top: 16px; }
         .btn {
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .btn-primary { background: var(--accent-green); color: #000; }
-        .btn-primary:hover { background: #2ea043; }
-        .btn-secondary { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border); }
-        .btn-secondary:hover { background: var(--border); }
         .btn-danger { background: var(--accent-red); color: #fff; }
+        .btn-danger:hover { background: #da3633; }
+        .btn-secondary { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border); }
         
         /* Results */
-        .results { display: none; }
-        .results.active { display: block; }
-        .result-card {
+        .results-section { margin-top: 20px; display: none; }
+        .results-section.active { display: block; }
+        
+        .verdict-box {
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .verdict-box.fraud { background: linear-gradient(135deg, #3d0a0a 0%, #1a0505 100%); border: 2px solid var(--accent-red); }
+        .verdict-box.suspicious { background: linear-gradient(135deg, #3d2a0a 0%, #1a1505 100%); border: 2px solid var(--accent-orange); }
+        .verdict-box.clean { background: linear-gradient(135deg, #0a3d1a 0%, #051a0a 100%); border: 2px solid var(--accent-green); }
+        
+        .verdict-score { font-size: 72px; font-weight: 700; line-height: 1; }
+        .verdict-score.high { color: var(--accent-red); }
+        .verdict-score.medium { color: var(--accent-orange); }
+        .verdict-score.low { color: var(--accent-green); }
+        
+        .verdict-label {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .verdict-action {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        
+        /* Findings */
+        .findings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .finding-card {
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
             border-radius: 8px;
-            margin-bottom: 12px;
             overflow: hidden;
         }
-        .result-header {
-            padding: 12px 16px;
+        .finding-card.critical { border-color: var(--accent-red); }
+        .finding-card.warning { border-color: var(--accent-orange); }
+        .finding-header {
+            padding: 10px 14px;
+            background: var(--bg-primary);
             border-bottom: 1px solid var(--border);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .result-title { font-size: 12px; font-weight: 600; }
-        .result-body { padding: 16px; }
-        
-        /* Score Display */
-        .score-display {
-            text-align: center;
-            padding: 30px;
-        }
-        .score-value {
-            font-size: 72px;
-            font-weight: 700;
-            line-height: 1;
-        }
-        .score-low { color: var(--accent-green); }
-        .score-medium { color: var(--accent-orange); }
-        .score-high { color: var(--accent-red); }
-        .verdict {
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 700;
-            margin-top: 15px;
-        }
-        .verdict-safe { background: var(--accent-green); color: #000; }
-        .verdict-caution { background: var(--accent-orange); color: #000; }
-        .verdict-danger { background: var(--accent-red); color: #fff; }
-        
-        /* Findings Table */
-        .findings-table {
-            width: 100%;
-            font-size: 11px;
-            border-collapse: collapse;
-        }
-        .findings-table th {
-            text-align: left;
-            padding: 8px;
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .findings-table td {
-            padding: 8px;
-            border-bottom: 1px solid var(--border);
-        }
-        .severity {
-            display: inline-block;
+        .finding-count {
             padding: 2px 8px;
-            border-radius: 3px;
-            font-weight: 600;
+            border-radius: 10px;
             font-size: 10px;
         }
-        .severity.critical { background: var(--accent-red); color: #fff; }
-        .severity.high { background: var(--accent-orange); color: #000; }
-        .severity.medium { background: #9e6a03; color: #fff; }
-        .severity.low { background: var(--accent-green); color: #000; }
+        .finding-count.red { background: var(--accent-red); color: #fff; }
+        .finding-count.orange { background: var(--accent-orange); color: #000; }
+        .finding-count.green { background: var(--accent-green); color: #000; }
+        .finding-body { padding: 12px; max-height: 250px; overflow-y: auto; }
+        
+        .finding-item {
+            padding: 10px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--border);
+        }
+        .finding-item.critical { border-left-color: var(--accent-red); }
+        .finding-item.warning { border-left-color: var(--accent-orange); }
+        .finding-item.info { border-left-color: var(--accent-blue); }
+        .finding-item.pass { border-left-color: var(--accent-green); }
+        
+        .finding-title {
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .finding-points {
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        .finding-points.high { background: var(--accent-red); color: #fff; }
+        .finding-points.med { background: var(--accent-orange); color: #000; }
+        .finding-points.low { background: var(--accent-blue); color: #fff; }
+        .finding-desc { font-size: 11px; color: var(--text-secondary); }
+        .finding-evidence {
+            font-size: 10px;
+            color: var(--accent-purple);
+            margin-top: 6px;
+            font-family: monospace;
+            background: var(--bg-primary);
+            padding: 6px;
+            border-radius: 3px;
+            word-break: break-all;
+        }
         
         /* Right Panel */
         .info-table {
@@ -326,40 +302,13 @@
             font-size: 11px;
         }
         .info-table td {
-            padding: 6px 0;
+            padding: 8px 0;
             border-bottom: 1px solid var(--border);
         }
         .info-table td:first-child { color: var(--text-secondary); }
-        .info-table td:last-child { text-align: right; color: var(--accent-blue); font-family: monospace; }
+        .info-table td:last-child { text-align: right; font-family: monospace; color: var(--accent-blue); }
         
-        /* Scroll Items */
-        .scroll-item {
-            padding: 12px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            margin-bottom: 8px;
-        }
-        .scroll-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-        .scroll-title { font-size: 11px; font-weight: 600; color: var(--accent-blue); }
-        .scroll-status {
-            font-size: 9px;
-            padding: 2px 6px;
-            border-radius: 3px;
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-        }
-        .scroll-status.active { background: var(--accent-green); color: #000; }
-        .scroll-cite { font-size: 10px; color: var(--text-secondary); }
-        .scroll-text { font-size: 11px; color: var(--text-primary); margin-top: 6px; }
-        
-        /* Hash Display */
-        .hash-box {
+        .hash-display {
             background: var(--bg-primary);
             border: 1px solid var(--border);
             border-radius: 4px;
@@ -368,21 +317,41 @@
             font-size: 9px;
             color: var(--accent-blue);
             word-break: break-all;
-            margin-top: 10px;
+            margin-top: 12px;
         }
         
-        /* Footer */
+        .section-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 16px 0;
+        }
+        
+        .link-item {
+            display: block;
+            padding: 10px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .link-item:hover { border-color: var(--accent-blue); }
+        .link-title { font-size: 11px; font-weight: 600; color: var(--accent-blue); margin-bottom: 2px; }
+        .link-desc { font-size: 10px; color: var(--text-secondary); }
+        
         .footer {
             text-align: center;
-            padding: 15px;
+            padding: 20px;
             font-size: 10px;
             color: var(--text-secondary);
             border-top: 1px solid var(--border);
-            margin-top: 20px;
+            margin-top: 30px;
         }
         
-        @media (max-width: 1200px) {
-            .app-grid { grid-template-columns: 1fr; }
+        @media (max-width: 1400px) {
+            .grid-3 { grid-template-columns: 1fr; }
+            .findings-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -390,332 +359,420 @@
     <header class="header">
         <div class="header-row">
             <div>
-                <div class="brand">FLAME PROTOCOL</div>
-                <div class="brand-sub">Client Submission Analysis System v2.0</div>
+                <div class="brand">⚠ FLAME FORENSIC</div>
+                <div class="brand-sub">Document Fraud Detection & Analysis System v3.0</div>
             </div>
-            <div class="header-meta">
-                <div>SEC CIK: <span>0001750462</span></div>
-                <div>SOX: <span>§404</span></div>
-                <div>STB: <span>W-435</span></div>
-                <div><span class="status-dot"></span>Online</div>
+            <div class="header-badges">
+                <div class="badge active">SOX §404</div>
+                <div class="badge active">SHA-256</div>
+                <div class="badge active">18 USC 1001</div>
+                <div class="badge warn">FRAUD ALERT</div>
             </div>
         </div>
-        <nav class="nav-row">
-            <a class="nav-item active">Document Analysis</a>
-            <a class="nav-item">Fraud Registry</a>
-            <a class="nav-item">Reports</a>
-        </nav>
     </header>
 
-    <div class="app-grid">
-        <!-- Left Panel -->
-        <aside class="panel">
-            <div class="section">
-                <div class="section-title">Document Upload</div>
-                <div class="upload-zone" id="uploadZone">
-                    <div class="upload-icon">📄</div>
-                    <div class="upload-text">Drop files or click to upload</div>
-                    <div class="upload-hint">PDF, DOCX, TXT, Images (OCR)</div>
-                </div>
-                <input type="file" id="fileInput" class="file-input" multiple accept=".pdf,.docx,.doc,.txt,.png,.jpg,.jpeg">
-                <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
-                <div class="file-list" id="fileList"></div>
-            </div>
-            
-            <div class="section">
-                <div class="section-title">Document Type</div>
-                <div class="doc-types">
-                    <div class="doc-type selected" data-type="kyc">
-                        <div class="doc-type-icon">🪪</div>
-                        <div>KYC</div>
+    <div class="app-container">
+        <div class="grid-3">
+            <!-- LEFT PANEL -->
+            <div class="panel">
+                <div class="panel-header">📁 Document Input</div>
+                <div class="panel-body">
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-icon">📤</div>
+                        <div class="upload-text">Drop Documents Here</div>
+                        <div class="upload-hint">PDF, DOCX, TXT, Images (OCR)</div>
                     </div>
-                    <div class="doc-type" data-type="cis">
-                        <div class="doc-type-icon">📋</div>
-                        <div>CIS</div>
-                    </div>
-                    <div class="doc-type" data-type="pof">
-                        <div class="doc-type-icon">💰</div>
-                        <div>Proof of Funds</div>
-                    </div>
-                    <div class="doc-type" data-type="other">
-                        <div class="doc-type-icon">📁</div>
-                        <div>Other</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="section-title">Federal Registration</div>
-                <table class="info-table">
-                    <tr><td>SEC CIK</td><td>0001750462</td></tr>
-                    <tr><td>STB Reg</td><td>W-435</td></tr>
-                    <tr><td>IRS EIN</td><td>98-6101010</td></tr>
-                    <tr><td>Trust</td><td>RE384951947US</td></tr>
-                    <tr><td>DRS</td><td>1124-911</td></tr>
-                </table>
-            </div>
-        </aside>
-
-        <!-- Center Panel -->
-        <main class="panel">
-            <div class="input-box">
-                <div class="input-header">
-                    <span class="input-label">Document Content / Extracted Text</span>
-                    <span class="input-meta"><span id="charCount">0</span> characters</span>
-                </div>
-                <textarea class="input-area" id="contentInput" placeholder="Paste document text directly or upload files above.
-
-The system will analyze for:
-• Fake banking systems (blue/black screens)
-• Impossible amounts (trillions to debit cards)
-• Advance fee fraud patterns
-• Known scam narratives
-• Missing required KYC fields
-• Fraudulent proof of funds
-• Credential harvesting attempts"></textarea>
-                <div class="btn-row">
-                    <button class="btn btn-primary" onclick="analyzeContent()">🔍 Analyze Submission</button>
-                    <button class="btn btn-secondary" onclick="clearAll()">Clear</button>
-                    <button class="btn btn-secondary" onclick="downloadReport()">📄 Download Report</button>
-                </div>
-            </div>
-            
-            <div class="results" id="results">
-                <div class="section">
-                    <div class="section-title">Analysis Results</div>
+                    <input type="file" id="fileInput" multiple accept=".pdf,.docx,.doc,.txt,.png,.jpg,.jpeg">
+                    <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+                    <div id="fileList"></div>
                     
-                    <div class="result-card">
-                        <div class="result-header">
-                            <span class="result-title">FRAUD RISK ASSESSMENT</span>
+                    <div class="section-divider"></div>
+                    
+                    <div class="panel-header" style="margin:-16px -16px 16px -16px;padding:12px 16px;">📋 Document Type</div>
+                    <div class="doc-type-grid">
+                        <div class="doc-type-btn" data-type="pof">
+                            <div class="doc-type-icon">💰</div>
+                            <div class="doc-type-label">Proof of Funds</div>
                         </div>
-                        <div class="result-body">
-                            <div class="score-display">
-                                <div class="score-value score-low" id="scoreValue">--</div>
-                                <div><span class="verdict verdict-safe" id="verdict">AWAITING ANALYSIS</span></div>
+                        <div class="doc-type-btn" data-type="swift">
+                            <div class="doc-type-icon">🏦</div>
+                            <div class="doc-type-label">SWIFT/MT Message</div>
+                        </div>
+                        <div class="doc-type-btn selected" data-type="kyc">
+                            <div class="doc-type-icon">🪪</div>
+                            <div class="doc-type-label">KYC Documents</div>
+                        </div>
+                        <div class="doc-type-btn" data-type="bank">
+                            <div class="doc-type-icon">📊</div>
+                            <div class="doc-type-label">Bank Statement</div>
+                        </div>
+                        <div class="doc-type-btn" data-type="sblc">
+                            <div class="doc-type-icon">📜</div>
+                            <div class="doc-type-label">SBLC/BG/LC</div>
+                        </div>
+                        <div class="doc-type-btn" data-type="other">
+                            <div class="doc-type-icon">📁</div>
+                            <div class="doc-type-label">Other</div>
+                        </div>
+                    </div>
+                    
+                    <div class="section-divider"></div>
+                    
+                    <div class="panel-header" style="margin:-16px -16px 16px -16px;padding:12px 16px;">🔗 Verification Links</div>
+                    <a href="https://www.sec.gov/comments/s7-07-19/s70719-5724527-186087.htm" target="_blank" class="link-item">
+                        <div class="link-title">SEC File S7-07-19</div>
+                        <div class="link-desc">Certificate-less Securities Fraud</div>
+                    </a>
+                    <a href="https://app.ardrive.io/#/file/d30addd7-12a3-4f80-af0e-6320d2ba1cc9/view" target="_blank" class="link-item">
+                        <div class="link-title">Slavery Circular 3591</div>
+                        <div class="link-desc">ArDrive Permanent Storage</div>
+                    </a>
+                    <a href="https://certyfile.com/en/certification/u-s-attorney-mandatory-enforcement-slavery-circular-no-3591-circular-no-3356-supp-1/" target="_blank" class="link-item">
+                        <div class="link-title">CertyFile Certification</div>
+                        <div class="link-desc">SHA-512 Digital Fingerprint</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- CENTER PANEL -->
+            <div class="panel">
+                <div class="panel-header">📝 Document Content</div>
+                <div class="panel-body">
+                    <textarea class="content-area" id="contentInput" placeholder="Paste document content here or upload files...
+
+WHAT THIS SYSTEM DETECTS:
+
+🔴 PROOF OF FUNDS FRAUD
+   - Fake bank confirmations
+   - Fabricated balance statements  
+   - Non-existent bank references
+   - Impossible account numbers
+
+🔴 SWIFT/MT MESSAGE FRAUD
+   - Fake MT103/MT760/MT799
+   - Invalid SWIFT codes
+   - Wrong message formats
+   - Missing required fields
+
+🔴 KYC DOCUMENT FRAUD
+   - Missing required fields
+   - Inconsistent information
+   - Fake government IDs
+   - Address mismatches
+
+🔴 BANK STATEMENT FRAUD
+   - Round number patterns
+   - Inconsistent formatting
+   - Missing transaction details
+   - Fabricated balances
+
+🔴 SBLC/BG/LC FRAUD
+   - Fake instrument numbers
+   - Invalid issuing banks
+   - Wrong ICC format
+   - Missing verbiage
+
+🔴 GENERAL SCAM PATTERNS
+   - Advance fee requests
+   - Urgency pressure
+   - Secrecy demands
+   - Impossible amounts"></textarea>
+                    <div class="char-count"><span id="charCount">0</span> characters</div>
+                    
+                    <div class="btn-row">
+                        <button class="btn btn-danger" onclick="runForensicAnalysis()">🔍 RUN FORENSIC ANALYSIS</button>
+                        <button class="btn btn-secondary" onclick="clearAll()">Clear</button>
+                        <button class="btn btn-secondary" onclick="downloadReport()">📄 Export Report</button>
+                    </div>
+                </div>
+                
+                <div class="results-section" id="resultsSection">
+                    <div class="panel-header">⚠️ ANALYSIS RESULTS</div>
+                    <div class="panel-body">
+                        <div class="verdict-box" id="verdictBox">
+                            <div class="verdict-score" id="verdictScore">--</div>
+                            <div class="verdict-label" id="verdictLabel">AWAITING ANALYSIS</div>
+                            <div class="verdict-action" id="verdictAction">Upload documents and run analysis</div>
+                        </div>
+                        
+                        <div class="findings-grid">
+                            <div class="finding-card critical">
+                                <div class="finding-header">
+                                    <span>🚨 Critical Fraud Indicators</span>
+                                    <span class="finding-count red" id="criticalCount">0</span>
+                                </div>
+                                <div class="finding-body" id="criticalFindings">
+                                    <div class="finding-item info">
+                                        <div class="finding-desc">No analysis performed yet</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="finding-card warning">
+                                <div class="finding-header">
+                                    <span>⚠️ Warning Signs</span>
+                                    <span class="finding-count orange" id="warningCount">0</span>
+                                </div>
+                                <div class="finding-body" id="warningFindings">
+                                    <div class="finding-item info">
+                                        <div class="finding-desc">No analysis performed yet</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="finding-card">
+                                <div class="finding-header">
+                                    <span>📋 Document Validation</span>
+                                    <span class="finding-count" id="validationCount">0</span>
+                                </div>
+                                <div class="finding-body" id="validationFindings">
+                                    <div class="finding-item info">
+                                        <div class="finding-desc">Select document type for validation</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="finding-card">
+                                <div class="finding-header">
+                                    <span>🔍 Pattern Analysis</span>
+                                    <span class="finding-count" id="patternCount">0</span>
+                                </div>
+                                <div class="finding-body" id="patternFindings">
+                                    <div class="finding-item info">
+                                        <div class="finding-desc">No analysis performed yet</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="result-card">
-                        <div class="result-header">
-                            <span class="result-title">RED FLAGS DETECTED (<span id="flagCount">0</span>)</span>
-                        </div>
-                        <div class="result-body">
-                            <table class="findings-table">
-                                <thead>
-                                    <tr>
-                                        <th>Severity</th>
-                                        <th>Category</th>
-                                        <th>Description</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="flagsBody">
-                                    <tr><td colspan="3" style="color:var(--text-secondary);text-align:center;padding:20px;">No analysis performed yet</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    <div class="result-card">
-                        <div class="result-header">
-                            <span class="result-title">KYC/CIS FIELD VALIDATION</span>
-                        </div>
-                        <div class="result-body">
-                            <table class="findings-table">
-                                <thead>
-                                    <tr>
-                                        <th>Field</th>
-                                        <th>Status</th>
-                                        <th>Notes</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="kycBody">
-                                    <tr><td colspan="3" style="color:var(--text-secondary);text-align:center;padding:20px;">Upload KYC/CIS document to validate</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
             </div>
-        </main>
 
-        <!-- Right Panel -->
-        <aside class="panel">
-            <div class="section">
-                <div class="section-title">Verification Links</div>
-                <div class="scroll-item" style="border-color: var(--accent-blue);">
-                    <div class="scroll-header">
-                        <div class="scroll-title">SEC File S7-07-19</div>
-                        <div class="scroll-status active">VERIFIED</div>
-                    </div>
-                    <div class="scroll-cite">National Archives Record</div>
-                    <div class="scroll-text">Certificate-less Securities Fraud</div>
-                    <a href="https://www.sec.gov/comments/s7-07-19/s70719-5724527-186087.htm" target="_blank" style="display:block;margin-top:8px;color:var(--accent-blue);font-size:9px;">sec.gov/comments/s7-07-19</a>
+            <!-- RIGHT PANEL -->
+            <div class="panel">
+                <div class="panel-header">📊 Analysis Metadata</div>
+                <div class="panel-body">
+                    <table class="info-table">
+                        <tr><td>Document ID</td><td id="docId">--</td></tr>
+                        <tr><td>Timestamp</td><td id="timestamp">--</td></tr>
+                        <tr><td>Document Type</td><td id="docType">KYC</td></tr>
+                        <tr><td>Analyst</td><td>FLAME FDS v3.0</td></tr>
+                    </table>
+                    
+                    <div class="hash-display" id="contentHash">SHA-256 hash will appear after analysis</div>
+                    
+                    <div class="section-divider"></div>
+                    
+                    <div class="panel-header" style="margin:0 -16px 16px -16px;padding:12px 16px;">📈 Score Methodology</div>
+                    <table class="info-table">
+                        <tr><td>200+</td><td style="color:var(--accent-red);">DEFINITE FRAUD</td></tr>
+                        <tr><td>150-199</td><td style="color:var(--accent-red);">HIGHLY SUSPICIOUS</td></tr>
+                        <tr><td>100-149</td><td style="color:var(--accent-orange);">SUSPICIOUS</td></tr>
+                        <tr><td>50-99</td><td style="color:var(--accent-orange);">QUESTIONABLE</td></tr>
+                        <tr><td>&lt;50</td><td style="color:var(--accent-green);">NEEDS REVIEW</td></tr>
+                    </table>
+                    
+                    <div class="section-divider"></div>
+                    
+                    <div class="panel-header" style="margin:0 -16px 16px -16px;padding:12px 16px;">🏛️ Federal Registration</div>
+                    <table class="info-table">
+                        <tr><td>SEC CIK</td><td>0001750462</td></tr>
+                        <tr><td>STB</td><td>W-435</td></tr>
+                        <tr><td>EIN</td><td>98-6101010</td></tr>
+                        <tr><td>Trust</td><td>RE384951947US</td></tr>
+                        <tr><td>DRS</td><td>1124-911</td></tr>
+                    </table>
                 </div>
-                <div class="scroll-item" style="border-color: var(--accent-purple);">
-                    <div class="scroll-header">
-                        <div class="scroll-title">Slavery Circular 3591</div>
-                        <div class="scroll-status active">ARWEAVE</div>
-                    </div>
-                    <div class="scroll-cite">Permanent Storage</div>
-                    <a href="https://app.ardrive.io/#/file/d30addd7-12a3-4f80-af0e-6320d2ba1cc9/view" target="_blank" style="display:block;margin-top:8px;color:var(--accent-purple);font-size:9px;">ArDrive Permanent Link</a>
-                </div>
-                <div class="scroll-item" style="border-color: var(--accent-green);">
-                    <div class="scroll-header">
-                        <div class="scroll-title">CertyFile</div>
-                        <div class="scroll-status active">SHA-512</div>
-                    </div>
-                    <a href="https://certyfile.com/en/certification/u-s-attorney-mandatory-enforcement-slavery-circular-no-3591-circular-no-3356-supp-1/" target="_blank" style="display:block;margin-top:8px;color:var(--accent-green);font-size:9px;">Digital Certification</a>
-                </div>
             </div>
-            
-            <div class="section">
-                <div class="section-title">Score Methodology</div>
-                <table class="info-table">
-                    <tr><td>150+</td><td style="color:var(--accent-red);">DEFINITE FRAUD</td></tr>
-                    <tr><td>100-149</td><td style="color:var(--accent-red);">HIGHLY SUSPICIOUS</td></tr>
-                    <tr><td>50-99</td><td style="color:var(--accent-orange);">SUSPICIOUS</td></tr>
-                    <tr><td>25-49</td><td style="color:var(--accent-orange);">QUESTIONABLE</td></tr>
-                    <tr><td>&lt;25</td><td style="color:var(--accent-green);">APPEARS LEGIT</td></tr>
-                </table>
-            </div>
-            
-            <div class="section">
-                <div class="section-title">Document Hash</div>
-                <div class="hash-box" id="contentHash">Upload or paste content to generate SHA-256 hash</div>
-            </div>
-            
-            <div class="section">
-                <div class="section-title">Report Info</div>
-                <table class="info-table">
-                    <tr><td>Doc ID</td><td id="docId">--</td></tr>
-                    <tr><td>Timestamp</td><td id="timestamp">--</td></tr>
-                    <tr><td>Analyst</td><td>FLAME FDS</td></tr>
-                </table>
-            </div>
-        </aside>
+        </div>
     </div>
-    
+
     <div class="footer">
-        FLAME Protocol | GB Dynamics Inc | admin@flameqmm.app | 916-891-7552<br>
-        SPEC_HASH: 0xf1ab854ae097ac6445bd55ba58d903655ad1f41d6caadaa0a21a9b4c320046be
+        FLAME Protocol Forensic Document Analysis System | GB Dynamics Inc | admin@flameqmm.app | 916-891-7552<br>
+        SPEC_HASH: 0xf1ab854ae097ac6445bd55ba58d903655ad1f41d6caadaa0a21a9b4c320046be | 18 USC 1001 | SOX §404
     </div>
 
     <script>
-        // Initialize PDF.js
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         
         let selectedDocType = 'kyc';
+        let analysisResults = null;
         
-        // Fraud patterns
-        const PATTERNS = [
-            { regex: /€?\$?\d{1,3}(,\d{3}){4,}|\d{12,}|trillion|billion.*transfer/i, points: 80, category: 'IMPOSSIBLE_AMOUNT', desc: 'Amount exceeds realistic transfer limits' },
-            { regex: /debit card.*\d{6,}|transfer.*to.*card/i, points: 70, category: 'IMPOSSIBLE_METHOD', desc: 'Debit cards cannot receive large transfers' },
-            { regex: /send.*gas|pay.*fee.*release|unlock.*fee|activation.*fee/i, points: 70, category: 'ADVANCE_FEE', desc: 'Classic advance fee fraud pattern' },
-            { regex: /connecting.*database|loading.*server|processing.*request/i, points: 50, category: 'FAKE_SYSTEM', desc: 'Simulated system messages' },
-            { regex: /verif(y|ied|ication).*success|identity.*confirmed/i, points: 50, category: 'FAKE_VERIFICATION', desc: 'Fraudulent verification display' },
-            { regex: /approval.*code|reference.*generated|transaction.*id.*:/i, points: 40, category: 'FAKE_APPROVAL', desc: 'Fake approval codes' },
-            { regex: /congratulations|you.*won|selected.*winner|lucky.*winner/i, points: 60, category: 'BAIT_LANGUAGE', desc: 'Classic scam opening language' },
-            { regex: /urgent|immediately|within.*24.*hours|act.*now|limited.*time/i, points: 40, category: 'URGENCY_TACTIC', desc: 'Pressure tactic' },
-            { regex: /guaranteed.*return|100%.*safe|risk.*free|no.*risk/i, points: 60, category: 'FALSE_PROMISE', desc: 'Impossible guarantees' },
-            { regex: /western.*union|moneygram|bitcoin.*only|crypto.*only/i, points: 50, category: 'UNTRACEABLE', desc: 'Untraceable payment methods' },
-            { regex: /prince|inheritance|lottery|beneficiary.*fund/i, points: 70, category: 'KNOWN_SCAM', desc: 'Known scam narrative' },
-            { regex: /enter.*card|enter.*pin|enter.*cvv|enter.*password/i, points: 60, category: 'CREDENTIAL_HARVEST', desc: 'Credential theft attempt' },
-            { regex: /bridge.*for.*me|swap.*for.*me|transfer.*for.*me/i, points: 50, category: 'INTERMEDIARY_SCAM', desc: 'Unnecessary intermediary' },
-            { regex: /validate.*wallet|verify.*wallet|sync.*wallet|connect.*wallet/i, points: 60, category: 'WALLET_DRAIN', desc: 'Wallet draining attempt' },
-            { regex: /do not.*tell|keep.*secret|confidential.*transaction/i, points: 50, category: 'SECRECY', desc: 'Isolation tactic' },
-            { regex: /iban.*[a-z]{2}\d{2}/i, points: -10, category: 'LEGITIMATE', desc: 'Valid IBAN format' },
-            { regex: /swift.*[a-z]{6}[a-z0-9]{2}/i, points: -10, category: 'LEGITIMATE', desc: 'Valid SWIFT format' },
+        // ═══════════════════════════════════════════════════════════════════════
+        // COMPREHENSIVE FRAUD DETECTION PATTERNS
+        // ═══════════════════════════════════════════════════════════════════════
+        
+        const CRITICAL_PATTERNS = [
+            // IMPOSSIBLE AMOUNTS
+            { regex: /\$?\€?\£?\d{1,3}(,\d{3}){4,}|\d{13,}|trillion|quadrillion/i, points: 100, category: 'IMPOSSIBLE_AMOUNT', desc: 'Amount exceeds realistic financial limits', evidence: true },
+            { regex: /billion.*usd.*transfer|transfer.*billion/i, points: 90, category: 'IMPOSSIBLE_TRANSFER', desc: 'Billion-dollar transfers are not done this way', evidence: true },
+            { regex: /\d+\s*(t|b|m)\s*(usd|eur|gbp)/i, points: 80, category: 'SUSPICIOUS_NOTATION', desc: 'Unusual amount notation (T/B/M)', evidence: true },
+            
+            // ADVANCE FEE FRAUD
+            { regex: /pay.*fee.*release|release.*fee|unlock.*fee|activation.*fee|processing.*fee.*required/i, points: 100, category: 'ADVANCE_FEE', desc: 'Classic advance fee fraud - NEVER pay to receive', evidence: true },
+            { regex: /send.*\$?\d+.*to.*release|wire.*\d+.*unlock/i, points: 100, category: 'ADVANCE_FEE_SPECIFIC', desc: 'Specific advance fee demand detected', evidence: true },
+            { regex: /tax.*clearance.*fee|anti.*money.*laundering.*fee|kyc.*fee.*required/i, points: 90, category: 'FAKE_FEE', desc: 'Fraudulent fee types - these do not exist', evidence: true },
+            
+            // FAKE BANKING SYSTEMS
+            { regex: /connecting.*to.*database|loading.*server|processing.*your.*request/i, points: 80, category: 'FAKE_SYSTEM', desc: 'Simulated banking system messages', evidence: true },
+            { regex: /transaction.*approved.*automatically|auto.*approved|instant.*approval/i, points: 70, category: 'FAKE_APPROVAL', desc: 'Real transfers require manual approval', evidence: true },
+            { regex: /verification.*status.*:.*✓|identity.*:.*verified|kyc.*:.*passed/i, points: 60, category: 'FAKE_VERIFICATION', desc: 'Fake verification status display', evidence: true },
+            
+            // KNOWN SCAM NARRATIVES  
+            { regex: /nigerian.*prince|royal.*family.*fund|inheritance.*unclaimed|lottery.*winner/i, points: 100, category: 'KNOWN_SCAM', desc: 'Classic 419 scam narrative', evidence: true },
+            { regex: /beneficiary.*of.*\$|selected.*to.*receive|chosen.*for.*payment/i, points: 80, category: 'BAIT_LANGUAGE', desc: 'Unsolicited beneficiary selection', evidence: true },
+            { regex: /united.*nations.*fund|imf.*payment|world.*bank.*compensation/i, points: 100, category: 'FAKE_INSTITUTION', desc: 'Fake institutional authority', evidence: true },
+            
+            // CREDENTIAL HARVESTING
+            { regex: /enter.*your.*(card|pin|cvv|password|seed|private.*key)/i, points: 100, category: 'CREDENTIAL_HARVEST', desc: 'Attempting to steal credentials', evidence: true },
+            { regex: /validate.*wallet|verify.*wallet|sync.*wallet|connect.*wallet.*to/i, points: 90, category: 'WALLET_DRAIN', desc: 'Wallet draining attack', evidence: true },
+            
+            // PRESSURE TACTICS
+            { regex: /urgent|immediately|within.*24.*hours|expires.*today|act.*now|limited.*time/i, points: 50, category: 'URGENCY', desc: 'Artificial urgency pressure tactic', evidence: true },
+            { regex: /do.*not.*tell|keep.*secret|confidential.*transaction|private.*deal/i, points: 70, category: 'SECRECY', desc: 'Secrecy demand - isolation tactic', evidence: true },
+            
+            // FAKE GUARANTEES
+            { regex: /100%.*guaranteed|risk.*free|no.*risk|guaranteed.*return|guaranteed.*profit/i, points: 70, category: 'FALSE_GUARANTEE', desc: 'Nothing in finance is guaranteed', evidence: true },
+            { regex: /double.*your.*money|10x.*return|1000%.*profit/i, points: 80, category: 'IMPOSSIBLE_RETURN', desc: 'Mathematically impossible returns', evidence: true },
         ];
         
-        // KYC required fields
-        const KYC_FIELDS = [
-            { name: 'Full Legal Name', regex: /full.*name|legal.*name|name.*:/i },
-            { name: 'Date of Birth', regex: /date.*birth|dob|born.*on/i },
-            { name: 'Government ID', regex: /passport|driver.*license|national.*id|government.*id/i },
-            { name: 'Address', regex: /address|residence|street|city.*state/i },
-            { name: 'Phone Number', regex: /phone|mobile|tel:|contact.*number/i },
-            { name: 'Email', regex: /email|e-mail|@.*\./i },
-            { name: 'Source of Funds', regex: /source.*fund|origin.*fund|wealth.*source/i },
-            { name: 'Bank Reference', regex: /bank.*reference|bank.*statement|account.*statement/i },
+        const POF_PATTERNS = [
+            // PROOF OF FUNDS SPECIFIC
+            { regex: /balance.*confirmation.*letter|bcl|bank.*comfort.*letter/i, points: 40, category: 'POF_TYPE', desc: 'Bank confirmation letter detected', evidence: true },
+            { regex: /funds.*are.*clean.*clear.*and.*free/i, points: 30, category: 'POF_STANDARD', desc: 'Standard POF verbiage (verify authenticity)', evidence: true },
+            { regex: /good.*for.*\d+.*days|valid.*until/i, points: 20, category: 'POF_EXPIRY', desc: 'POF validity period mentioned', evidence: false },
+            
+            // POF RED FLAGS
+            { regex: /balance.*:\s*\$?\d{10,}/i, points: 60, category: 'POF_SUSPICIOUS_BALANCE', desc: 'Extraordinarily high balance claim', evidence: true },
+            { regex: /private.*bank|offshore.*account|numbered.*account/i, points: 50, category: 'POF_OFFSHORE', desc: 'Offshore/private bank reference - harder to verify', evidence: true },
+            { regex: /screenshot|photo.*of.*statement|picture.*of.*balance/i, points: 70, category: 'POF_SCREENSHOT', desc: 'Screenshots are easily fabricated', evidence: true },
+            
+            // MISSING ELEMENTS
+            { regex: /^(?!.*account.*number).*$/is, points: 30, category: 'POF_NO_ACCOUNT', desc: 'Missing account number', evidence: false },
+            { regex: /^(?!.*swift|.*bic).*$/is, points: 30, category: 'POF_NO_SWIFT', desc: 'Missing SWIFT/BIC code', evidence: false },
+            { regex: /^(?!.*bank.*name|.*financial.*institution).*$/is, points: 30, category: 'POF_NO_BANK', desc: 'Missing bank identification', evidence: false },
         ];
         
-        // Upload handling
+        const SWIFT_PATTERNS = [
+            // SWIFT MESSAGE VALIDATION
+            { regex: /mt\s?103|mt103/i, points: 20, category: 'SWIFT_MT103', desc: 'MT103 reference detected', evidence: true },
+            { regex: /mt\s?760|mt760/i, points: 20, category: 'SWIFT_MT760', desc: 'MT760 guarantee message', evidence: true },
+            { regex: /mt\s?799|mt799/i, points: 20, category: 'SWIFT_MT799', desc: 'MT799 free format message', evidence: true },
+            
+            // SWIFT RED FLAGS
+            { regex: /swift.*copy|copy.*of.*swift|swift.*message.*attached/i, points: 60, category: 'SWIFT_COPY_CLAIM', desc: 'SWIFT copies are easily fabricated', evidence: true },
+            { regex: /pre.*advice|pre-advice|conditional.*swift/i, points: 70, category: 'SWIFT_PREADVICE', desc: 'Pre-advice is not a payment', evidence: true },
+            { regex: /blocked.*funds|frozen.*account.*swift/i, points: 80, category: 'SWIFT_BLOCKED', desc: 'Blocked funds narrative is common scam', evidence: true },
+            
+            // INVALID SWIFT CODES (too short/long, wrong format)
+            { regex: /swift\s*:?\s*[a-z]{3,5}[a-z0-9]{0,3}\s/i, points: 50, category: 'SWIFT_INVALID', desc: 'Invalid SWIFT code format (should be 8 or 11 chars)', evidence: true },
+        ];
+        
+        const SBLC_PATTERNS = [
+            // SBLC/BG/LC DETECTION
+            { regex: /standby.*letter.*of.*credit|sblc/i, points: 20, category: 'SBLC_DETECTED', desc: 'SBLC reference detected', evidence: true },
+            { regex: /bank.*guarantee|bg\s|demand.*guarantee/i, points: 20, category: 'BG_DETECTED', desc: 'Bank Guarantee reference', evidence: true },
+            { regex: /documentary.*credit|letter.*of.*credit|l\/c/i, points: 20, category: 'LC_DETECTED', desc: 'Letter of Credit reference', evidence: true },
+            
+            // SBLC RED FLAGS
+            { regex: /leased.*sblc|sblc.*lease|rent.*sblc/i, points: 90, category: 'SBLC_LEASE_SCAM', desc: 'SBLC leasing is a common fraud', evidence: true },
+            { regex: /fresh.*cut|newly.*issued.*bg|seasoned.*sblc/i, points: 80, category: 'SBLC_JARGON', desc: 'Scam jargon - legitimate banks do not use this', evidence: true },
+            { regex: /monetize.*sblc|cash.*out.*bg|discount.*sblc/i, points: 90, category: 'SBLC_MONETIZE', desc: 'SBLC monetization scam', evidence: true },
+            { regex: /icc.*600|ucp.*600|urdg.*758/i, points: -10, category: 'SBLC_ICC_REF', desc: 'ICC rules reference (legitimate)', evidence: false },
+            { regex: /top.*\d+.*bank|tier.*one.*bank|prime.*bank/i, points: 70, category: 'PRIME_BANK_SCAM', desc: 'Prime bank fraud indicator', evidence: true },
+        ];
+        
+        const BANK_STATEMENT_PATTERNS = [
+            // BANK STATEMENT RED FLAGS
+            { regex: /balance.*:\s*\$?\d+,\d{3},\d{3},\d{3}/i, points: 60, category: 'STMT_HIGH_BALANCE', desc: 'Unusually high balance', evidence: true },
+            { regex: /(\d{1,3},)*\d{3}\.00\s*\n.*(\d{1,3},)*\d{3}\.00\s*\n/i, points: 50, category: 'STMT_ROUND_NUMBERS', desc: 'Multiple round numbers - possible fabrication', evidence: true },
+            { regex: /available.*balance.*:\s*\$?\d+.*\n.*ledger.*balance.*:\s*\$?\d+/i, points: -10, category: 'STMT_DUAL_BALANCE', desc: 'Standard dual balance format', evidence: false },
+            
+            // MISSING ELEMENTS
+            { regex: /^(?!.*statement.*period|.*from.*to.*\d{4}).*$/is, points: 40, category: 'STMT_NO_PERIOD', desc: 'Missing statement period', evidence: false },
+            { regex: /^(?!.*transaction.*date|.*posted.*date).*$/is, points: 30, category: 'STMT_NO_TRANSACTIONS', desc: 'No transaction details', evidence: false },
+        ];
+        
+        const KYC_REQUIRED_FIELDS = [
+            { name: 'Full Legal Name', regex: /full.*name|legal.*name|name\s*:/i, required: true },
+            { name: 'Date of Birth', regex: /date.*birth|dob|born|d\.?o\.?b/i, required: true },
+            { name: 'Government ID', regex: /passport|driver.*licen|national.*id|government.*id|id.*number/i, required: true },
+            { name: 'ID Number', regex: /passport.*no|license.*no|id.*#|identification.*number/i, required: true },
+            { name: 'Address', regex: /address|residence|street|city.*state|postal/i, required: true },
+            { name: 'Phone Number', regex: /phone|mobile|tel|contact.*number/i, required: true },
+            { name: 'Email', regex: /email|e-mail|@[a-z]+\.[a-z]/i, required: true },
+            { name: 'Source of Funds', regex: /source.*of.*funds|origin.*of.*wealth|sof/i, required: true },
+            { name: 'Occupation', regex: /occupation|profession|employment|job.*title/i, required: true },
+            { name: 'Signature', regex: /signature|signed|authorized.*by/i, required: false },
+            { name: 'Date Issued', regex: /date.*issued|issue.*date|dated/i, required: false },
+            { name: 'Expiry Date', regex: /expiry|expiration|valid.*until|expires/i, required: false },
+        ];
+        
+        // ═══════════════════════════════════════════════════════════════════════
+        // FILE HANDLING
+        // ═══════════════════════════════════════════════════════════════════════
+        
         const uploadZone = document.getElementById('uploadZone');
         const fileInput = document.getElementById('fileInput');
         const progressBar = document.getElementById('progressBar');
         const progressFill = document.getElementById('progressFill');
-        const fileList = document.getElementById('fileList');
         const contentInput = document.getElementById('contentInput');
         
         uploadZone.addEventListener('click', () => fileInput.click());
-        uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+        uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
         uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-        uploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('dragover');
-            handleFiles(e.dataTransfer.files);
-        });
-        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+        uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+        fileInput.addEventListener('change', e => handleFiles(e.target.files));
         
         async function handleFiles(files) {
             progressBar.classList.add('active');
             for (const file of files) {
                 addFileItem(file.name, 'processing');
-                progressFill.style.width = '30%';
                 try {
+                    progressFill.style.width = '20%';
                     const text = await extractText(file);
-                    contentInput.value += (contentInput.value ? '\n\n---\n\n' : '') + text;
+                    progressFill.style.width = '100%';
+                    contentInput.value += (contentInput.value ? '\n\n--- NEW DOCUMENT ---\n\n' : '') + text;
                     updateCharCount();
                     updateFileItem(file.name, 'success');
                 } catch (err) {
-                    updateFileItem(file.name, 'error', err.message);
+                    updateFileItem(file.name, 'error');
                 }
-                progressFill.style.width = '100%';
             }
-            setTimeout(() => {
-                progressBar.classList.remove('active');
-                progressFill.style.width = '0%';
-            }, 500);
+            setTimeout(() => { progressBar.classList.remove('active'); progressFill.style.width = '0%'; }, 500);
         }
         
         async function extractText(file) {
             const name = file.name.toLowerCase();
-            const type = file.type;
-            
-            if (type === 'application/pdf' || name.endsWith('.pdf')) {
-                return await extractPDF(file);
-            } else if (type.includes('wordprocessingml') || name.endsWith('.docx')) {
-                return await extractDOCX(file);
-            } else if (/\.(png|jpg|jpeg)$/.test(name)) {
-                return await extractOCR(file);
-            } else if (type === 'text/plain' || name.endsWith('.txt')) {
-                return await file.text();
-            }
-            throw new Error('Unsupported file type');
+            if (name.endsWith('.pdf')) return await extractPDF(file);
+            if (name.endsWith('.docx')) return await extractDOCX(file);
+            if (/\.(png|jpg|jpeg)$/.test(name)) return await extractOCR(file);
+            if (name.endsWith('.txt')) return await file.text();
+            throw new Error('Unsupported');
         }
         
         async function extractPDF(file) {
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            const ab = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
             let text = '';
             for (let i = 1; i <= pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
                 const content = await page.getTextContent();
                 text += content.items.map(item => item.str).join(' ') + '\n';
+                progressFill.style.width = (20 + (i / pdf.numPages) * 60) + '%';
             }
             return text;
         }
         
         async function extractDOCX(file) {
-            const arrayBuffer = await file.arrayBuffer();
-            const result = await mammoth.extractRawText({ arrayBuffer });
+            const ab = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer: ab });
             return result.value;
         }
         
         async function extractOCR(file) {
             const result = await Tesseract.recognize(file, 'eng', {
-                logger: m => { if (m.progress) progressFill.style.width = (30 + m.progress * 70) + '%'; }
+                logger: m => { if (m.progress) progressFill.style.width = (20 + m.progress * 60) + '%'; }
             });
             return result.data.text;
         }
@@ -724,25 +781,26 @@ The system will analyze for:
             const div = document.createElement('div');
             div.className = 'file-item';
             div.id = 'file-' + name.replace(/[^a-z0-9]/gi, '');
-            div.innerHTML = `<span class="file-name">${name}</span><span class="file-status ${status}">${status === 'processing' ? 'Extracting...' : status}</span>`;
-            fileList.appendChild(div);
+            div.innerHTML = `<span>${name}</span><span class="file-status ${status}">${status === 'processing' ? 'Extracting...' : status}</span>`;
+            document.getElementById('fileList').appendChild(div);
         }
         
-        function updateFileItem(name, status, error) {
+        function updateFileItem(name, status) {
             const div = document.getElementById('file-' + name.replace(/[^a-z0-9]/gi, ''));
             if (div) {
-                const statusEl = div.querySelector('.file-status');
-                statusEl.className = 'file-status ' + status;
-                statusEl.textContent = status === 'success' ? '✓ Extracted' : error || 'Error';
+                const s = div.querySelector('.file-status');
+                s.className = 'file-status ' + status;
+                s.textContent = status === 'success' ? '✓ Extracted' : '✗ Failed';
             }
         }
         
         // Document type selection
-        document.querySelectorAll('.doc-type').forEach(el => {
-            el.addEventListener('click', () => {
-                document.querySelectorAll('.doc-type').forEach(e => e.classList.remove('selected'));
-                el.classList.add('selected');
-                selectedDocType = el.dataset.type;
+        document.querySelectorAll('.doc-type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.doc-type-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedDocType = btn.dataset.type;
+                document.getElementById('docType').textContent = selectedDocType.toUpperCase();
             });
         });
         
@@ -753,167 +811,330 @@ The system will analyze for:
         }
         
         // SHA-256
-        async function sha256(message) {
-            const msgBuffer = new TextEncoder().encode(message);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+        async function sha256(msg) {
+            const buf = new TextEncoder().encode(msg);
+            const hash = await crypto.subtle.digest('SHA-256', buf);
+            return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
         }
         
-        // Clear
         function clearAll() {
             contentInput.value = '';
             updateCharCount();
-            fileList.innerHTML = '';
-            document.getElementById('results').classList.remove('active');
-            document.getElementById('contentHash').textContent = 'Upload or paste content to generate SHA-256 hash';
-            document.getElementById('docId').textContent = '--';
-            document.getElementById('timestamp').textContent = '--';
+            document.getElementById('fileList').innerHTML = '';
+            document.getElementById('resultsSection').classList.remove('active');
         }
         
-        // Analyze
-        async function analyzeContent() {
+        // ═══════════════════════════════════════════════════════════════════════
+        // FORENSIC ANALYSIS ENGINE
+        // ═══════════════════════════════════════════════════════════════════════
+        
+        async function runForensicAnalysis() {
             const content = contentInput.value;
             if (!content.trim()) {
                 alert('Please upload documents or paste content to analyze');
                 return;
             }
             
-            // Generate hash
+            const docId = 'FDS-' + Date.now().toString(36).toUpperCase();
+            const timestamp = new Date().toISOString();
             const hash = await sha256(content);
+            
+            document.getElementById('docId').textContent = docId;
+            document.getElementById('timestamp').textContent = timestamp;
             document.getElementById('contentHash').textContent = '0x' + hash;
             
-            // Generate doc ID
-            const docId = 'FDS-' + Date.now().toString(36).toUpperCase();
-            document.getElementById('docId').textContent = docId;
-            document.getElementById('timestamp').textContent = new Date().toISOString();
+            // Run all pattern checks
+            const critical = [];
+            const warnings = [];
+            const patterns = [];
+            const validations = [];
             
-            // Analyze patterns
-            let totalScore = 0;
-            const flags = [];
-            
-            for (const pattern of PATTERNS) {
-                if (pattern.regex.test(content)) {
-                    totalScore += pattern.points;
-                    if (pattern.points > 0) {
-                        flags.push({
-                            category: pattern.category,
-                            desc: pattern.desc,
-                            points: pattern.points,
-                            severity: pattern.points >= 60 ? 'critical' : pattern.points >= 40 ? 'high' : 'medium'
-                        });
-                    }
+            // Check critical patterns
+            for (const p of CRITICAL_PATTERNS) {
+                const match = content.match(p.regex);
+                if (match) {
+                    critical.push({
+                        ...p,
+                        evidenceText: p.evidence ? match[0].substring(0, 100) : null
+                    });
                 }
             }
             
+            // Check document-specific patterns
+            let docPatterns = [];
+            switch (selectedDocType) {
+                case 'pof': docPatterns = POF_PATTERNS; break;
+                case 'swift': docPatterns = SWIFT_PATTERNS; break;
+                case 'sblc': docPatterns = SBLC_PATTERNS; break;
+                case 'bank': docPatterns = BANK_STATEMENT_PATTERNS; break;
+            }
+            
+            for (const p of docPatterns) {
+                const match = content.match(p.regex);
+                if (match && p.points > 0) {
+                    if (p.points >= 50) {
+                        critical.push({ ...p, evidenceText: p.evidence ? match[0].substring(0, 100) : null });
+                    } else {
+                        warnings.push({ ...p, evidenceText: p.evidence ? match[0].substring(0, 100) : null });
+                    }
+                } else if (match && p.points < 0) {
+                    patterns.push({ ...p, evidenceText: null, points: Math.abs(p.points), positive: true });
+                }
+            }
+            
+            // KYC Field validation
+            if (selectedDocType === 'kyc') {
+                for (const field of KYC_REQUIRED_FIELDS) {
+                    const found = field.regex.test(content);
+                    validations.push({
+                        name: field.name,
+                        found: found,
+                        required: field.required,
+                        points: (!found && field.required) ? 20 : 0
+                    });
+                }
+            }
+            
+            // Calculate total score
+            let totalScore = 0;
+            totalScore += critical.reduce((sum, f) => sum + f.points, 0);
+            totalScore += warnings.reduce((sum, f) => sum + f.points, 0);
+            totalScore += validations.filter(v => !v.found && v.required).length * 20;
+            totalScore -= patterns.filter(p => p.positive).reduce((sum, p) => sum + p.points, 0);
             totalScore = Math.max(0, totalScore);
             
-            // Update score display
-            const scoreEl = document.getElementById('scoreValue');
+            // Store results
+            analysisResults = { docId, timestamp, hash, content, selectedDocType, totalScore, critical, warnings, validations, patterns };
+            
+            // Update UI
+            const scoreEl = document.getElementById('verdictScore');
+            const labelEl = document.getElementById('verdictLabel');
+            const actionEl = document.getElementById('verdictAction');
+            const boxEl = document.getElementById('verdictBox');
+            
             scoreEl.textContent = totalScore;
-            scoreEl.className = 'score-value ' + (totalScore >= 100 ? 'score-high' : totalScore >= 50 ? 'score-medium' : 'score-low');
             
-            // Update verdict
-            const verdictEl = document.getElementById('verdict');
-            if (totalScore >= 150) {
-                verdictEl.textContent = 'DEFINITE FRAUD - DO NOT PROCEED';
-                verdictEl.className = 'verdict verdict-danger';
+            if (totalScore >= 200) {
+                scoreEl.className = 'verdict-score high';
+                labelEl.textContent = '⛔ DEFINITE FRAUD';
+                actionEl.textContent = 'DO NOT PROCEED UNDER ANY CIRCUMSTANCES';
+                boxEl.className = 'verdict-box fraud';
+            } else if (totalScore >= 150) {
+                scoreEl.className = 'verdict-score high';
+                labelEl.textContent = '🚨 HIGHLY SUSPICIOUS';
+                actionEl.textContent = 'EXTREME CAUTION - LIKELY FRAUDULENT';
+                boxEl.className = 'verdict-box fraud';
             } else if (totalScore >= 100) {
-                verdictEl.textContent = 'HIGHLY SUSPICIOUS';
-                verdictEl.className = 'verdict verdict-danger';
+                scoreEl.className = 'verdict-score medium';
+                labelEl.textContent = '⚠️ SUSPICIOUS';
+                actionEl.textContent = 'DO NOT PROCEED WITHOUT EXTENSIVE VERIFICATION';
+                boxEl.className = 'verdict-box suspicious';
             } else if (totalScore >= 50) {
-                verdictEl.textContent = 'SUSPICIOUS - VERIFY FURTHER';
-                verdictEl.className = 'verdict verdict-caution';
-            } else if (totalScore >= 25) {
-                verdictEl.textContent = 'QUESTIONABLE';
-                verdictEl.className = 'verdict verdict-caution';
+                scoreEl.className = 'verdict-score medium';
+                labelEl.textContent = '⚡ QUESTIONABLE';
+                actionEl.textContent = 'REQUIRES ADDITIONAL DUE DILIGENCE';
+                boxEl.className = 'verdict-box suspicious';
             } else {
-                verdictEl.textContent = 'APPEARS LEGITIMATE';
-                verdictEl.className = 'verdict verdict-safe';
+                scoreEl.className = 'verdict-score low';
+                labelEl.textContent = '📋 NEEDS VERIFICATION';
+                actionEl.textContent = 'Low score does not guarantee legitimacy - always verify';
+                boxEl.className = 'verdict-box clean';
             }
             
-            // Update flags
-            document.getElementById('flagCount').textContent = flags.length;
-            document.getElementById('flagsBody').innerHTML = flags.length ? 
-                flags.map(f => `<tr><td><span class="severity ${f.severity}">+${f.points}</span></td><td>${f.category}</td><td>${f.desc}</td></tr>`).join('') :
-                '<tr><td colspan="3" style="color:var(--accent-green);text-align:center;padding:20px;">✓ No fraud patterns detected</td></tr>';
+            // Update findings
+            document.getElementById('criticalCount').textContent = critical.length;
+            document.getElementById('criticalFindings').innerHTML = critical.length ? 
+                critical.map(f => `
+                    <div class="finding-item critical">
+                        <div class="finding-title">
+                            <span>${f.category}</span>
+                            <span class="finding-points high">+${f.points}</span>
+                        </div>
+                        <div class="finding-desc">${f.desc}</div>
+                        ${f.evidenceText ? `<div class="finding-evidence">Evidence: "${f.evidenceText}..."</div>` : ''}
+                    </div>
+                `).join('') : '<div class="finding-item pass"><div class="finding-desc">✓ No critical fraud indicators detected</div></div>';
             
-            // KYC validation
-            if (selectedDocType === 'kyc' || selectedDocType === 'cis') {
-                const kycResults = KYC_FIELDS.map(field => ({
-                    name: field.name,
-                    found: field.regex.test(content),
-                }));
-                document.getElementById('kycBody').innerHTML = kycResults.map(r => `
-                    <tr>
-                        <td>${r.name}</td>
-                        <td><span class="severity ${r.found ? 'low' : 'high'}">${r.found ? '✓ FOUND' : '✗ MISSING'}</span></td>
-                        <td>${r.found ? 'Field detected' : 'Required field not found'}</td>
-                    </tr>
-                `).join('');
+            document.getElementById('warningCount').textContent = warnings.length;
+            document.getElementById('warningFindings').innerHTML = warnings.length ?
+                warnings.map(f => `
+                    <div class="finding-item warning">
+                        <div class="finding-title">
+                            <span>${f.category}</span>
+                            <span class="finding-points med">+${f.points}</span>
+                        </div>
+                        <div class="finding-desc">${f.desc}</div>
+                        ${f.evidenceText ? `<div class="finding-evidence">Evidence: "${f.evidenceText}..."</div>` : ''}
+                    </div>
+                `).join('') : '<div class="finding-item pass"><div class="finding-desc">✓ No warning signs detected</div></div>';
+            
+            // Validation findings
+            if (selectedDocType === 'kyc') {
+                const missing = validations.filter(v => !v.found && v.required);
+                const found = validations.filter(v => v.found);
+                document.getElementById('validationCount').textContent = missing.length;
+                document.getElementById('validationFindings').innerHTML = 
+                    missing.map(v => `<div class="finding-item warning"><div class="finding-title"><span>MISSING: ${v.name}</span><span class="finding-points med">+20</span></div><div class="finding-desc">Required KYC field not found</div></div>`).join('') +
+                    found.map(v => `<div class="finding-item pass"><div class="finding-title"><span>✓ ${v.name}</span></div><div class="finding-desc">Field detected</div></div>`).join('');
             } else {
-                document.getElementById('kycBody').innerHTML = '<tr><td colspan="3" style="color:var(--text-secondary);text-align:center;padding:20px;">Select KYC or CIS document type for field validation</td></tr>';
+                document.getElementById('validationCount').textContent = '0';
+                document.getElementById('validationFindings').innerHTML = '<div class="finding-item info"><div class="finding-desc">Select KYC document type for field validation</div></div>';
             }
             
-            document.getElementById('results').classList.add('active');
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            // Pattern findings
+            document.getElementById('patternCount').textContent = patterns.length;
+            document.getElementById('patternFindings').innerHTML = patterns.length ?
+                patterns.map(p => `
+                    <div class="finding-item ${p.positive ? 'pass' : 'info'}">
+                        <div class="finding-title">
+                            <span>${p.category}</span>
+                            <span class="finding-points low">${p.positive ? '-' : '+'}${p.points}</span>
+                        </div>
+                        <div class="finding-desc">${p.desc}</div>
+                    </div>
+                `).join('') : '<div class="finding-item info"><div class="finding-desc">No specific patterns detected for this document type</div></div>';
+            
+            document.getElementById('resultsSection').classList.add('active');
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
         }
         
-        // Download report
+        // ═══════════════════════════════════════════════════════════════════════
+        // REPORT GENERATION
+        // ═══════════════════════════════════════════════════════════════════════
+        
         function downloadReport() {
-            const score = document.getElementById('scoreValue').textContent;
-            const verdict = document.getElementById('verdict').textContent;
-            const docId = document.getElementById('docId').textContent;
-            const hash = document.getElementById('contentHash').textContent;
+            if (!analysisResults) {
+                alert('Run analysis first');
+                return;
+            }
+            
+            const r = analysisResults;
+            
+            const criticalSection = r.critical.length ?
+                r.critical.map(f => `  [+${f.points}] ${f.category}\n         ${f.desc}${f.evidenceText ? '\n         Evidence: "' + f.evidenceText + '..."' : ''}`).join('\n\n') :
+                '  ✓ No critical fraud indicators detected';
+            
+            const warningSection = r.warnings.length ?
+                r.warnings.map(f => `  [+${f.points}] ${f.category}\n         ${f.desc}${f.evidenceText ? '\n         Evidence: "' + f.evidenceText + '..."' : ''}`).join('\n\n') :
+                '  ✓ No warning signs detected';
+            
+            let validationSection = '  N/A - Not a KYC document';
+            if (r.selectedDocType === 'kyc') {
+                const missing = r.validations.filter(v => !v.found && v.required);
+                const found = r.validations.filter(v => v.found);
+                validationSection = 
+                    (missing.length ? missing.map(v => `  [✗] ${v.name} - MISSING (Required)`).join('\n') + '\n' : '') +
+                    found.map(v => `  [✓] ${v.name} - Found`).join('\n');
+            }
+            
+            const contentPreview = r.content.length > 3000 ? r.content.substring(0, 3000) + '\n\n[... TRUNCATED FOR REPORT ...]' : r.content;
             
             const report = `
-═══════════════════════════════════════════════════════════════════════════════
-              FLAME PROTOCOL - CLIENT SUBMISSION ANALYSIS REPORT
-═══════════════════════════════════════════════════════════════════════════════
+════════════════════════════════════════════════════════════════════════════════════════
+                     FLAME PROTOCOL - FORENSIC DOCUMENT ANALYSIS REPORT
+════════════════════════════════════════════════════════════════════════════════════════
 
-Document ID:    ${docId}
-Timestamp:      ${new Date().toISOString()}
-Document Type:  ${selectedDocType.toUpperCase()}
-Content Hash:   ${hash}
+  Document ID:      ${r.docId}
+  Timestamp:        ${r.timestamp}
+  Document Type:    ${r.selectedDocType.toUpperCase()}
+  Content Hash:     0x${r.hash}
+  Analyst System:   FLAME FDS v3.0
 
-═══════════════════════════════════════════════════════════════════════════════
-                              FRAUD RISK ASSESSMENT
-═══════════════════════════════════════════════════════════════════════════════
+════════════════════════════════════════════════════════════════════════════════════════
+                                   FRAUD RISK VERDICT
+════════════════════════════════════════════════════════════════════════════════════════
 
-SCORE:          ${score}
-VERDICT:        ${verdict}
+  ╔══════════════════════════════════════════════════════════════════════════════════╗
+  ║                                                                                  ║
+  ║    FRAUD RISK SCORE:  ${String(r.totalScore).padStart(3, ' ')}                                                         ║
+  ║                                                                                  ║
+  ║    VERDICT:  ${r.totalScore >= 200 ? '⛔ DEFINITE FRAUD - DO NOT PROCEED' :
+                  r.totalScore >= 150 ? '🚨 HIGHLY SUSPICIOUS - EXTREME CAUTION' :
+                  r.totalScore >= 100 ? '⚠️  SUSPICIOUS - EXTENSIVE VERIFICATION REQUIRED' :
+                  r.totalScore >= 50  ? '⚡ QUESTIONABLE - ADDITIONAL DUE DILIGENCE' :
+                                        '📋 NEEDS VERIFICATION - ALWAYS VERIFY'}
+  ║                                                                                  ║
+  ╚══════════════════════════════════════════════════════════════════════════════════╝
 
-═══════════════════════════════════════════════════════════════════════════════
-                              SCORE METHODOLOGY
-═══════════════════════════════════════════════════════════════════════════════
+════════════════════════════════════════════════════════════════════════════════════════
+                              🚨 CRITICAL FRAUD INDICATORS (${r.critical.length})
+════════════════════════════════════════════════════════════════════════════════════════
 
-150+        DEFINITE FRAUD      DO NOT PROCEED
-100-149     HIGHLY SUSPICIOUS   EXTREME CAUTION
-50-99       SUSPICIOUS          ADDITIONAL VERIFICATION
-25-49       QUESTIONABLE        ENHANCED DUE DILIGENCE
-<25         APPEARS LEGIT       STANDARD PROCESSING
+${criticalSection}
 
-═══════════════════════════════════════════════════════════════════════════════
-                              VERIFICATION
-═══════════════════════════════════════════════════════════════════════════════
+════════════════════════════════════════════════════════════════════════════════════════
+                              ⚠️  WARNING SIGNS (${r.warnings.length})
+════════════════════════════════════════════════════════════════════════════════════════
 
-SPEC_HASH: 0xf1ab854ae097ac6445bd55ba58d903655ad1f41d6caadaa0a21a9b4c320046be
+${warningSection}
 
-SEC CIK:   0001750462
-STB:       W-435
-EIN:       98-6101010
+════════════════════════════════════════════════════════════════════════════════════════
+                              📋 DOCUMENT FIELD VALIDATION
+════════════════════════════════════════════════════════════════════════════════════════
 
-Contact:   admin@flameqmm.app | 916-891-7552
+${validationSection}
 
-═══════════════════════════════════════════════════════════════════════════════
-                              GB DYNAMICS INC
-═══════════════════════════════════════════════════════════════════════════════
+════════════════════════════════════════════════════════════════════════════════════════
+                              📝 ANALYZED CONTENT
+════════════════════════════════════════════════════════════════════════════════════════
+
+${contentPreview}
+
+════════════════════════════════════════════════════════════════════════════════════════
+                              📊 SCORING METHODOLOGY
+════════════════════════════════════════════════════════════════════════════════════════
+
+  Score Range     Verdict                  Recommended Action
+  ───────────     ───────                  ──────────────────
+  200+            DEFINITE FRAUD           DO NOT PROCEED UNDER ANY CIRCUMSTANCES
+  150-199         HIGHLY SUSPICIOUS        EXTREME CAUTION - LIKELY FRAUDULENT
+  100-149         SUSPICIOUS               DO NOT PROCEED WITHOUT EXTENSIVE VERIFICATION
+  50-99           QUESTIONABLE             REQUIRES ADDITIONAL DUE DILIGENCE
+  <50             NEEDS VERIFICATION       LOW SCORE DOES NOT GUARANTEE LEGITIMACY
+
+════════════════════════════════════════════════════════════════════════════════════════
+                              🔐 VERIFICATION & COMPLIANCE
+════════════════════════════════════════════════════════════════════════════════════════
+
+  SPEC_HASH:      0xf1ab854ae097ac6445bd55ba58d903655ad1f41d6caadaa0a21a9b4c320046be
+  
+  Federal Registration:
+    SEC CIK:      0001750462
+    STB:          W-435
+    EIN:          98-6101010
+    Trust:        RE384951947US
+    DRS:          1124-911
+  
+  Legal References:
+    18 USC 1001   False Statements
+    18 USC 1343   Wire Fraud
+    18 USC 1344   Bank Fraud
+    SOX §404      Internal Controls
+
+════════════════════════════════════════════════════════════════════════════════════════
+                                    DISCLAIMER
+════════════════════════════════════════════════════════════════════════════════════════
+
+  This analysis is performed by automated pattern detection and does not constitute
+  legal advice. A LOW SCORE DOES NOT GUARANTEE LEGITIMACY. Always perform independent
+  verification through official banking channels before proceeding with any transaction.
+
+  If you believe you have been targeted by fraud, report to:
+    FBI IC3:      ic3.gov
+    FTC:          reportfraud.ftc.gov
+    SEC:          sec.gov/tcr
+
+════════════════════════════════════════════════════════════════════════════════════════
+                                   GB DYNAMICS INC
+                        admin@flameqmm.app | 916-891-7552
+════════════════════════════════════════════════════════════════════════════════════════
 `;
             
             const blob = new Blob([report], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `FLAME_Analysis_${docId}.txt`;
+            a.download = `FLAME_Forensic_Report_${r.docId}.txt`;
             a.click();
         }
     </script>
